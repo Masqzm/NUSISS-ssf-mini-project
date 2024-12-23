@@ -1,0 +1,12 @@
+{
+  "rectangle": {
+    "low": {
+      "latitude": 1.1300,
+      "longitude": 103.6000
+    },
+    "high": {
+      "latitude": 1.4600,
+      "longitude": 104.1000
+    }
+  }
+}

@@ -1,0 +1,12 @@
+places.displayName,
+places.formattedAddress,
+places.googleMapsUri,
+places.photos,
+places.types,
+places.regularOpeningHours,
+places.priceRange,places.rating,
+places.userRatingCount,
+places.websiteUri,
+places.dineIn,
+places.reviews,
+places.editorialSummary
