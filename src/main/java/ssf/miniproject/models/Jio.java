@@ -4,21 +4,35 @@ import java.util.Date;
 import java.util.List;
 
 public class Jio {
-    private String posterID;
+    private String id;
+    private String posterName;
     private Restaurant restaurant;
     private Date bookingDate;               // inclusive of time
     private int capacity;
     private boolean isJioingForPromo;
 
     private List<String> topics;
-    private List<String> attendeesIDList;   // inclusive of poster
+    private List<String> attendeesNameList;   // inclusive of poster
 
     
-    public String getPosterID() {
-        return posterID;
+    
+    @Override
+    public String toString() {
+        return "Jio [id=" + id + ", posterName=" + posterName + ", restaurant=" + restaurant + ", bookingDate="
+                + bookingDate + ", capacity=" + capacity + ", isJioingForPromo=" + isJioingForPromo + ", topics="
+                + topics + ", attendeesNameList=" + attendeesNameList + "]";
     }
-    public void setPosterID(String posterID) {
-        this.posterID = posterID;
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+    public String getPosterName() {
+        return posterName;
+    }
+    public void setPosterName(String posterName) {
+        this.posterName = posterName;
     }
     public Restaurant getRestaurant() {
         return restaurant;
@@ -50,12 +64,10 @@ public class Jio {
     public void setTopics(List<String> topics) {
         this.topics = topics;
     }
-    public List<String> getAttendeesIDList() {
-        return attendeesIDList;
+    public List<String> getAttendeesNameList() {
+        return attendeesNameList;
     }
-    public void setAttendeesIDList(List<String> attendeesIDList) {
-        this.attendeesIDList = attendeesIDList;
-    }
-
-    
+    public void setAttendeesNameList(List<String> attendeesNameList) {
+        this.attendeesNameList = attendeesNameList;
+    }    
 }

@@ -31,6 +31,7 @@ public class SearchController {
 
         try {
             mav.addObject("restaurantsList", searchSvc.getRestaurantsList(placeKeyword));
+            mav.addObject("placeKeyword", placeKeyword);
             mav.setViewName("search-results"); 
         } catch(Exception ex) {
             ex.printStackTrace();

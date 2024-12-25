@@ -3,7 +3,6 @@ package ssf.miniproject.models;
 import java.util.List;
 
 public class User {
-    private String id;
     private String name;
     private String password;
     private String email;
@@ -12,11 +11,11 @@ public class User {
     private List<Restaurant> favRestaurantsList; 
     
     
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
+
+    @Override
+    public String toString() {
+        return "User [name=" + name + ", password=" + password + ", email=" + email + ", phoneNo=" + phoneNo
+                + ", jioIDsList=" + jioIDsList + ", favRestaurantsList=" + favRestaurantsList + "]";
     }
     public String getName() {
         return name;
