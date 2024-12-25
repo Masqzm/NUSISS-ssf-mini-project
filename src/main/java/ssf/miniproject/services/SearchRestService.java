@@ -44,5 +44,5 @@ public class SearchRestService {
             ex.printStackTrace();
             throw ex;
         }
-    }    
+    }
 }

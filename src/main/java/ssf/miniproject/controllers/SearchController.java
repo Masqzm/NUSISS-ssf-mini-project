@@ -30,13 +30,13 @@ public class SearchController {
         ModelAndView mav = new ModelAndView();
 
         try {
-            searchSvc.getRestaurantsList(placeKeyword);
+            mav.addObject("restaurantsList", searchSvc.getRestaurantsList(placeKeyword));
+            mav.setViewName("search-results"); 
         } catch(Exception ex) {
-            //ex.printStackTrace();
-            //mav.setViewName("search-error");    
+            ex.printStackTrace();
+            mav.addObject("errorMsg", ex.getMessage());
+            mav.setViewName("search-error");    
         }
-        
-        mav.setViewName("index");
 
         return mav;
     }

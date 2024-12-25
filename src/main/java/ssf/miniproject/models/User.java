@@ -9,6 +9,7 @@ public class User {
     private String email;
     private String phoneNo;
     private List<String> jioIDsList;    // to keep track of upcoming jios user is attending
+    private List<Restaurant> favRestaurantsList; 
     
     
     public String getId() {
