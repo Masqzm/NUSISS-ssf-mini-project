@@ -21,11 +21,10 @@ public class SearchController {
     @RequestMapping(path={"/", "index.html"})
     public String getIndex(HttpSession sess, Model model) {
         
-        return "index";
+        return "login";
     }
 
     @GetMapping("/search")
-    //public ModelAndView Search(@RequestParam MultiValueMap<String, String> form) {
     public ModelAndView Search(@RequestParam String placeKeyword) {
         ModelAndView mav = new ModelAndView();
 
