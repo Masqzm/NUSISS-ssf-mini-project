@@ -10,11 +10,13 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class User {
     @NotBlank(message = "Username cannot be empty")
     @Size(min = 3, max = 12, message = "Username must be 3-12 characters long")
+    @Pattern(regexp="^[a-zA-Z0-9_]+$", message="Only alphanumeric characters and underscores are allowed")
     private String name;
 
     @NotBlank(message = "Password cannot be empty")

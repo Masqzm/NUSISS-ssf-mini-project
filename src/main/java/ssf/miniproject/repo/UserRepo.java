@@ -22,4 +22,14 @@ public class UserRepo {
     public void createUser(User user) {
         template.opsForHash().put(Constants.REDIS_KEY_USER, user.getName(), user.toJson());
     }
+
+    // HGET USERS <name>
+    public User getUser(String name) {
+        if(!template.opsForHash().hasKey(Constants.REDIS_KEY_USER, name))
+            return null;
+
+        String json = template.opsForHash().get(Constants.REDIS_KEY_USER, name).toString();        
+
+        return User.jsonToUser(json);
+    }
 }

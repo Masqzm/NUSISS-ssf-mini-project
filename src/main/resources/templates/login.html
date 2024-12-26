@@ -15,7 +15,7 @@
     <br>
     <br>
     <div class="container d-flex flex-column p-2 gap-3" style="max-width: 1100px;">
-        <div th:if="${prevPageURL} != null" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
+        <div th:if="${restrictedFlagRaised}" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
             <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
                 viewBox="0 0 16 16" role="img" aria-label="Warning:">
                 <path
@@ -33,18 +33,30 @@
                 <div class="card-body text-center">
                     <h5 class="card-title mb-4 py-4">JioMakan Logo</h5>
 
-                    <form method="POST" action="/login" th:object="${user}">
+                    <form method="POST" action="/login">
                         <div class="mb-4 px-4">
                             <input type="text" class="form-control" placeholder="Username" 
-                            th:field="*{name}" 
-                            th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
+                            name="name" 
+                            th:classappend="${nameBlankMsg != null or credentialsErrorMsg != null} ? 'is-invalid' : ''">
+
+                            <!-- validation error msg -->
+                            <span th:if="${nameBlankMsg}" th:text="${nameBlankMsg}" class="invalid-feedback text-start">
+                            </span>
                         </div>
 
                         <div class="mb-4 px-4">
                             <input type="password" class="form-control" placeholder="Password"
-                            th:field="*{password}" 
-                            th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
+                            name="password" 
+                            th:classappend="${pwBlankMsg != null or credentialsErrorMsg != null} ? 'is-invalid' : ''">
+
+                            <!-- validation error msg -->
+                            <span th:if="${pwBlankMsg}" th:text="${pwBlankMsg}" class="invalid-feedback text-start">
+                            </span>
                         </div>
+                        
+                        <!-- validation error msg -->
+                        <span th:if="${credentialsErrorMsg}" th:text="${credentialsErrorMsg}" class="is-invalid bs-danger">
+                        </span>
 
                         <div class="d-grid p-4">
                             <button type="submit" class="btn btn-primary">Login</button>

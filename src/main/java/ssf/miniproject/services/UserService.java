@@ -17,5 +17,16 @@ public class UserService {
 
     public void registerUser(User user) {
         userRepo.createUser(user);
+    }
+
+    public User checkUserCredentials(String name, String password) {
+        User user = userRepo.getUser(name);
+
+        // User credentials check passes if 
+        // user can be found AND password entered matches user's password
+        if(user != null && user.getPassword().equals(password))
+            return user;
+        
+        return null;
     }   
 }
