@@ -15,7 +15,7 @@
     <br>
     <br>
     <div class="container d-flex flex-column p-2 gap-3" style="max-width: 1100px;">
-        <div th:if="${prevPageURL} == null" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
+        <div th:if="${prevPageURL} != null" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
             <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
                 viewBox="0 0 16 16" role="img" aria-label="Warning:">
                 <path
@@ -27,19 +27,25 @@
         </div>
 
         <h1 class="text-center">Login</h1>
-         
+        <br>
         <div class="d-flex justify-content-center">
             <div class="card flex-grow-1" style="max-width: 500px;">
                 <div class="card-body text-center">
                     <h5 class="card-title mb-4 py-4">JioMakan Logo</h5>
 
-                    <form method="POST" action="/login">
+                    <form method="POST" action="/login" th:object="${user}">
                         <div class="mb-4 px-4">
-                            <input type="username" class="form-control" id="username" placeholder="Username">
+                            <input type="text" class="form-control" placeholder="Username" 
+                            th:field="*{name}" 
+                            th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
                         </div>
+
                         <div class="mb-4 px-4">
-                            <input type="password" class="form-control" id="password" placeholder="Password">
+                            <input type="password" class="form-control" placeholder="Password"
+                            th:field="*{password}" 
+                            th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
                         </div>
+
                         <div class="d-grid p-4">
                             <button type="submit" class="btn btn-primary">Login</button>
                         </div>

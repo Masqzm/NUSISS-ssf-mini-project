@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import ssf.miniproject.models.User;
 import ssf.miniproject.services.SearchService;
 
 @Controller
@@ -18,15 +20,28 @@ public class SearchController {
     @Autowired 
     SearchService searchSvc;
 
-    @RequestMapping(path={"/", "index.html"})
+    @GetMapping(path={"/", "index.html"})
     public String getIndex(HttpSession sess, Model model) {
-        
-        return "login";
+        return "index";
     }
 
     @GetMapping("/search")
-    public ModelAndView Search(@RequestParam String placeKeyword) {
+    public ModelAndView Search(@RequestParam String placeKeyword, HttpServletRequest request) {
         ModelAndView mav = new ModelAndView();
+
+        if(placeKeyword.isBlank())
+        {
+            // Get the referer header to determine the previous page
+            String referer = request.getHeader("Referer");
+
+            // Redirect to referer if avail, else fallback to index
+            if(referer != null) 
+                mav.setViewName("redirect:" + referer); 
+            else 
+                mav.setViewName("index"); 
+            
+            return mav;
+        }
 
         try {
             mav.addObject("restaurantsList", searchSvc.getRestaurantsList(placeKeyword));

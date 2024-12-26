@@ -4,6 +4,7 @@ import jakarta.json.JsonObject;
 
 public class Constants {
     public static final String REDIS_TEMPLATE = "redis-0";
+    public static final String REDIS_KEY_USER = "USERS";      
     public static final String REDIS_KEY_SEARCH_CACHE = "RESULTS";      // search results cache
     public static final long REDIS_CACHE_TTL_HRS = 10;                  // how long to cache results in hrs TODO: change back to 1h or btr soln: clear on session close
 
