@@ -18,11 +18,6 @@ public class SearchController {
     @Autowired 
     SearchService searchSvc;
 
-    @GetMapping(path={"/", "index.html"})
-    public String getIndex(HttpSession sess, Model model) {
-        return "index";
-    }
-
     @GetMapping("/search")
     public ModelAndView Search(@RequestParam String placeKeyword, HttpServletRequest request) {
         ModelAndView mav = new ModelAndView();

@@ -15,7 +15,7 @@ import jakarta.validation.constraints.Size;
 
 public class User {
     @NotBlank(message = "Username cannot be empty")
-    @Size(min = 3, max = 12, message = "Username must be 3-12 characters long")
+    @Size(min = 3, max = 16, message = "Username must be 3-16 characters long")
     @Pattern(regexp="^[a-zA-Z0-9_]+$", message="Only alphanumeric characters and underscores are allowed")
     private String name;
 

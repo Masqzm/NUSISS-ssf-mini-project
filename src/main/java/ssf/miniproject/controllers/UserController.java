@@ -29,7 +29,7 @@ public class UserController {
     public ModelAndView getRegistration() {
         ModelAndView mav = new ModelAndView();
 
-        mav.addObject("user", new User());
+        mav.addObject("user", new User());        
         mav.setViewName("register");
             
         return mav;
@@ -60,6 +60,7 @@ public class UserController {
 
         userSvc.registerUser(user);
         
+        mav.addObject("currentUser", user);  
         mav.setViewName("register-success");
 
         return mav;
@@ -128,6 +129,17 @@ public class UserController {
             mav.setViewName((String) sess.getAttribute(Constants.SESS_ATTR_REDIR_REQ));
         else
             mav.setViewName("redirect:/");
+
+        return mav;
+    }
+
+    @GetMapping("/logout")
+    public ModelAndView getLogout(HttpSession sess) {
+        ModelAndView mav = new ModelAndView();
+
+        sess.invalidate();
+
+        mav.setViewName("redirect:/");
 
         return mav;
     }
