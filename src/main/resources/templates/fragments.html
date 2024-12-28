@@ -11,7 +11,10 @@
 <body>
     <nav th:fragment="navbar(currentUser)" class="navbar navbar-expand-lg bg-danger fixed-top">
         <div class="container-fluid px-4 py-1" style="max-width: 1200px;">
-            <a class="navbar-brand h1 text-light" th:href="@{/}">JioMakan</a>
+            <div class="d-flex align-items-start mt-2">
+                <img class="mx-2" height=30 width=30 src="https://img.icons8.com/ios/50/food-bar.png" style="filter: brightness(0) invert(1);" alt="food-bar"/>
+                <a class="navbar-brand text-light" th:href="@{/}"><h5>JioMakan</h5></a>
+            </div>
 
             <!-- collapsible button (to show nav links when screen size is small) -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -19,11 +22,14 @@
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
+            
             <div class="collapse navbar-collapse justify-content-start" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item ms-3">
                         <a class="nav-link text-light" aria-current="page" th:href="@{/about}">About</a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <a class="nav-link text-light" aria-current="page" th:href="@{/jios}">All Jios</a>
                     </li>
                     <li th:if="${currentUser == null}" class="nav-item ms-3">
                         <a class="btn btn-outline-light" th:href="@{/register}" role="button">Sign up</a>

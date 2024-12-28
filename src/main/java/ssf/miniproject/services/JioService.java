@@ -20,7 +20,7 @@ public class JioService {
     @Autowired
     UserRepo userRepo;
 
-    public void saveJio(String name, Restaurant rest, Jio jio) {
+    public String saveJio(String name, Restaurant rest, Jio jio) {
         String id = UUID.randomUUID().toString().substring(0, 8);
         List<String> attendeesNameList = new ArrayList<>();
         attendeesNameList.add(name);    // add poster as attendee too
@@ -32,6 +32,8 @@ public class JioService {
         jio.setAttendeesNameList(attendeesNameList);
         
         jioRepo.saveJio(id, jio.toJson());
+
+        return id;
     }    
 
     public Jio getJioByID(String id) {

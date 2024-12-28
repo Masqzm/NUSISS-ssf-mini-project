@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,7 +73,10 @@ public class SearchController {
     }
 
     @GetMapping("/restaurant/{id}")
-    public ModelAndView getRestaurantInfo(@PathVariable String id, HttpSession sess) {
+    public ModelAndView getRestaurantInfo(
+        @RequestParam(required=false, defaultValue="false") boolean postSuccess, 
+        @PathVariable String id, HttpSession sess) {
+            
         ModelAndView mav = new ModelAndView();
 
         mav.addObject("currentUser", sess.getAttribute(Constants.SESS_ATTR_USER));
@@ -82,9 +86,26 @@ public class SearchController {
         // To pass restaurant info if users post a Jio
         sess.setAttribute(Constants.SESS_ATTR_JIO_RESTAURANT, rest);
         
+        // Form error handling (passed thru sessions as users are redirected back here)
+        BindingResult bindings = (BindingResult) sess.getAttribute(Constants.SESS_ATTR_JIO_FORM_ERR);
+        Jio jio = (Jio) sess.getAttribute(Constants.SESS_ATTR_JIO_FORM);
+        
+        if(bindings != null && bindings.hasErrors()) {
+            if(bindings.getFieldError("date") != null)
+                mav.addObject("dateErrors", bindings.getFieldError("date").getDefaultMessage());
+            if(bindings.getFieldError("time") != null)
+                mav.addObject("timeErrors", bindings.getFieldError("time").getDefaultMessage());
+            if(bindings.getFieldError("topics") != null)
+                mav.addObject("topicsErrors", bindings.getFieldError("topics").getDefaultMessage());
+
+            // Remove errors from sess
+            sess.removeAttribute(Constants.SESS_ATTR_JIO_FORM_ERR);
+        }
+                
         mav.addObject("restaurant", searchSvc.getRestaurantByID(id));
-        mav.addObject("jio", new Jio());
+        mav.addObject("jio", (jio == null ? new Jio() : jio));
         mav.addObject("topicSuggestions", Constants.JIO_TOPICS_LIST);
+        mav.addObject("postSuccess", postSuccess);
         mav.setViewName("restaurant-info"); 
 
         return mav;

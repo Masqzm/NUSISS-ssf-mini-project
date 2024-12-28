@@ -35,16 +35,29 @@ public class JioController {
         User user = (User) sess.getAttribute(Constants.SESS_ATTR_USER);
 
         // Restrict access if user haven't logged in & redirect to login page
-        if(user == null) {
-            mav.setViewName("redirect:/login?restrictedFlagRaised=true");
+        // if(user == null) {
+        //     mav.setViewName("redirect:/login?restrictedFlagRaised=true");
 
+        //     return mav;
+        // }
+        
+        Restaurant rest = (Restaurant) sess.getAttribute(Constants.SESS_ATTR_JIO_RESTAURANT);
+        
+        // Redirect back
+        if(bindings.hasErrors())
+        {
+            sess.setAttribute(Constants.SESS_ATTR_JIO_FORM_ERR, bindings);
+            sess.setAttribute(Constants.SESS_ATTR_JIO_FORM, jio);
+            mav.setViewName("redirect:/restaurant/" + rest.getId());
+            
             return mav;
         }
 
-        jioSvc.saveJio(user.getName(), (Restaurant) sess.getAttribute(Constants.SESS_ATTR_JIO_RESTAURANT), jio);
+        String id = jioSvc.saveJio(user.getName(), rest, jio);
         
-        mav.setViewName("index");
-
+        mav.addObject("jioID", id);
+        mav.setViewName("redirect:/restaurant/" + rest.getId() + "?postSuccess=true");
+        
         return mav;
     }
 }

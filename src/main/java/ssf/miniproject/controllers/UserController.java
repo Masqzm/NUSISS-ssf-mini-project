@@ -106,6 +106,7 @@ public class UserController {
                 bindings.addError(err);
             }
 
+            mav.addObject("hasErrorMsg", true);
             mav.setViewName("register");
             
             return mav;

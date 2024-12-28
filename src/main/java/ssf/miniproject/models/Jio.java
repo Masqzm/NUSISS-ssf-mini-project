@@ -23,17 +23,17 @@ public class Jio {
     private String posterName;
     private Restaurant restaurant;
 
-    @NotNull(message = "Please select a date")
-    @Future(message = "Please enter a valid date")
+    @NotNull(message = "*Please select a date")
+    @Future(message = "*Please enter a valid future date")
     private LocalDate date;
 
-    @NotNull(message = "Please select a time")
+    @NotNull(message = "*Please select a time")
     private LocalTime time;
 
     private int capacity;
     private boolean jioingForPromo;
 
-    @Size(min = 1, message = "Please select at least one topic")
+    @Size(min = 1, message = "*Please select at least one topic")
     private List<String> topics;
     private List<String> attendeesNameList;   // inclusive of poster
 

@@ -13,6 +13,8 @@ public class Constants {
     public static final long REDIS_CACHE_TTL_HRS = 10;                  // how long to cache results in hrs TODO: change back to 1h or btr soln: clear on session close
 
     public static final String SESS_ATTR_USER = "currentUser";
+    public static final String SESS_ATTR_JIO_FORM = "prefilledForm";
+    public static final String SESS_ATTR_JIO_FORM_ERR = "fieldErrors";
     public static final String SESS_ATTR_JIO_RESTAURANT = "storedRestInfo";    // temp storage of restaurant info
     public static final String SESS_ATTR_REDIR_REQ = "redirectRequest";         // session attr key to hold request URI + query (if any) to redirect to upon successful registration/login
     
