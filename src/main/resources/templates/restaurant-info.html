@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Info</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="m-0 border-0">
+    <div th:insert="~{fragments :: navbar(${currentUser})}"></div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div th:insert="~{fragments :: searchbar}" id="#top"></div>
+    <br>
+
+    <div class="container-fluid d-flex flex-column align-items-center p-2 gap-5">
+        <!-- <h1 th:text="${restaurant.name}">Restaurant name</h1> -->
+
+        <div id="topRow" class="d-flex justify-content-evenly gap-4 px-4" style="max-width: 1400px;">            
+            <div id="restaurantInfo" class="flex-grow-1">
+                <div class="card text-center" style="min-width: 50rem;" th:object="${restaurant}">
+                    <div class="card-header p-0">
+                        <img class="img-fluid" th:src="*{googlePhotosURI}" style="max-height: 18rem;"></img>
+                    </div>
+
+                    <div class="container d-flex flex-column py-3 gap-3">
+                        <div id="title" class="h3" th:text="*{name}"></div>
+
+                        <div id="address" class="d-flex justify-content-center align-items-center gap-2">
+                            <span class="text-danger mb-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+                                </svg>
+                            </span>
+                            <span th:text="*{address}"></span>
+                            <!-- <a class="link-underline link-underline-opacity-0" th:href="*{googleMapsURI}" th:text="*{address}"></a> -->
+                        </div>
+
+                        <div id="priceRange" class="fw-medium" th:text="*{priceRange}"></div>
+
+                        <div id="rating" class="fw-medium d-flex justify-content-center align-items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-star-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                            </svg>
+                            <div class="ms-1">
+                                <span th:text="*{rating}"></span>/5.0
+                                (<span th:text="*{userRatingCount}"></span> reviews)
+                            </div>
+                        </div>
+
+                        <div id="openingHoursList" class="fw-light">
+                            <div th:each="openingHour : ${restaurant.openingHoursList}">
+                                <span th:utext="${openingHour}"></span>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col left">
+                                </div>
+
+                                <div class="col ctr d-flex gap-3 justify-content-center align-items-center">
+                                    <a th:href="*{googleMapsURI}">
+                                        <span class="text-danger">
+                                            <svg xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;" fill="currentColor" class="bi bi-pin-map-fill" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M3.1 11.2a.5.5 0 0 1 .4-.2H6a.5.5 0 0 1 0 1H3.75L1.5 15h13l-2.25-3H10a.5.5 0 0 1 0-1h2.5a.5.5 0 0 1 .4.2l3 4a.5.5 0 0 1-.4.8H.5a.5.5 0 0 1-.4-.8z"/>
+                                                <path fill-rule="evenodd" d="M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999z"/>
+                                            </svg>
+                                        </span> 
+                                    </a>
+                                    
+                                    <a th:href="*{websiteURI == null ? '#' : websiteURI}" >
+                                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 25px; height: 25px;" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+                                            <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/>
+                                            <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                                
+                                <div class="col right">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="jioForm" class="flex-shrink-1" style="min-width: 35rem;">
+                <div class="card">
+                    <h5 class="card-header p-3 text-center">Open Jio</h5>
+                    <div class="card-body">
+                        
+                        <form method="POST" action="/jio" class="px-4 py-2" th:object="${jio}">
+                            <div class="card-text h5 fw-normal mb-3">When</div>
+                            <div class="row mb-4 fw-light">
+                                <label class="col-sm-2 col-form-label" for="date">Date</label>
+                                <div class="col-sm-4">
+                                    <input type="date" class="form-control fw-light" name="date" th:field="*{date}">
+                                </div>
+
+                                <label class="col-sm-2 col-form-label" for="time">Time</label>
+                                <div class="col-sm-4">
+                                    <input type="time" class="form-control" name="time" th:field="*{time}">
+                                </div>
+                            </div>
+
+                            
+                            <div class="card-text h5 fw-normal mb-3">Max Capacity</div>
+                            <div class="row mb-4 fw-light">
+                                <label class="col-sm-2 col-form-label" for="capacity">Pax</label>
+                                <div class="col-sm-4">
+                                    <select class="form-select text-center fw-light" name="capacity" th:field="*{capacity}">
+                                        <option value="2" selected>2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="card-text h5 fw-normal mb-3">Jio-ing for promo</div>
+                            <div class="row mb-4 fw-light">
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" id="btnradio1" 
+                                    th:field="*{jioingForPromo}" th:value="false" checked>
+                                    <label class="btn btn-outline-danger" for="btnradio1">✗</label>
+                                    
+                                    <input type="radio" class="btn-check" id="btnradio2" 
+                                    th:field="*{jioingForPromo}" th:value="true">
+                                    <label class="btn btn-outline-success" for="btnradio2">✓</label>
+                                </div>
+                            </div>
+
+                            <div class="card-text h5 fw-normal mb-3">Topics focus</div>
+                            <div class="row mb-4 fw-light">
+                                <div class="col">
+                                    <div class="btn-group d-flex flex-wrap gap-2" role="group">
+                                        <div th:each="topic, iterStat : ${topicSuggestions}">
+                                            <input class="form-check-input" type="checkbox" 
+                                            th:value="${topic}" th:id="'checkbox' + ${iterStat.index}"
+                                            th:field="*{topics}">
+                                            <label class="form-check-label" 
+                                            th:for="'checkbox' + ${iterStat.index}" th:text="${topic}">
+                                                Default checkbox
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-sm-4"></div>
+                                <div class="col-sm-4 text-center">
+                                    <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                                </div>
+                                <div class="col-sm-4"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div id="btmRow" class="container d-flex">
+            Btm (Upcoming Jios)
+        </div>   
+
+        <div class="position-fixed z-3" style="bottom: 5%; right: 2.5%;">
+            <a href="#top" >
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="currentColor" class="bi bi-arrow-up-square-fill" viewBox="0 0 16 16">
+                <path d="M2 16a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2zm6.5-4.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 1 0"/>
+              </svg>
+            </a>
+        </div>
+    </div>
+
+    <div th:insert="~{fragments :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

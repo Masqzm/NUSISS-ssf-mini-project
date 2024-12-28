@@ -26,12 +26,65 @@ public class UserController {
     UserService userSvc;
 
     @GetMapping("/register")
-    public ModelAndView getRegistration() {
+    public ModelAndView getRegistration(HttpSession sess) {
         ModelAndView mav = new ModelAndView();
 
+        // Check if user trying to access this page when they are already logged in
+        User user = (User) sess.getAttribute(Constants.SESS_ATTR_USER);
+        if(user != null) {
+            mav.addObject("currentUser", user); 
+            mav.setViewName("redirect:/");
+            
+            return mav;
+        }
+        
         mav.addObject("user", new User());        
         mav.setViewName("register");
             
+        return mav;
+    }
+
+    @GetMapping("/login")
+    public ModelAndView getLogin(@RequestParam(required = false, defaultValue = "false") boolean restrictedFlagRaised, HttpServletRequest request, HttpSession sess) {
+        ModelAndView mav = new ModelAndView();
+
+        String referer = request.getHeader("Referer");
+
+        // Store current page before clicking "Login" 
+        if(referer != null && !referer.contains("login")) {
+            String redirReq = referer;
+
+            // Set redirect to index if user is from registration page
+            if(referer.contains("register"))
+                redirReq = "/";
+
+            sess.setAttribute(Constants.SESS_ATTR_REDIR_REQ, "redirect:" + redirReq);
+        }
+
+        // Check if user trying to access this page when they are already logged in
+        User user = (User) sess.getAttribute(Constants.SESS_ATTR_USER);
+        if(user != null) {
+            mav.addObject("currentUser", user); 
+            mav.setViewName((String) sess.getAttribute(Constants.SESS_ATTR_REDIR_REQ));
+            
+            return mav;
+        }
+
+        mav.addObject("user", new User());
+        mav.addObject("restrictedFlagRaised", restrictedFlagRaised);
+        mav.setViewName("login");
+            
+        return mav;
+    }
+
+    @GetMapping("/logout")
+    public ModelAndView getLogout(HttpSession sess) {
+        ModelAndView mav = new ModelAndView();
+
+        sess.invalidate();
+
+        mav.setViewName("redirect:/");
+
         return mav;
     }
 
@@ -63,30 +116,6 @@ public class UserController {
         mav.addObject("currentUser", user);  
         mav.setViewName("register-success");
 
-        return mav;
-    }
-
-    @GetMapping("/login")
-    public ModelAndView getLogin(@RequestParam(required = false, defaultValue = "false") boolean restrictedFlagRaised, HttpServletRequest request, HttpSession sess) {
-        ModelAndView mav = new ModelAndView();
-
-        String referer = request.getHeader("Referer");
-
-        // Store current page before clicking "Login" 
-        if(referer != null && !referer.contains("login")) {
-            String redirReq = referer;
-
-            // Set redirect to index if user is from registration page
-            if(referer.contains("register"))
-                redirReq = "/";
-
-            sess.setAttribute(Constants.SESS_ATTR_REDIR_REQ, "redirect:" + redirReq);
-        }
-
-        mav.addObject("user", new User());
-        mav.addObject("restrictedFlagRaised", restrictedFlagRaised);
-        mav.setViewName("login");
-            
         return mav;
     }
 
@@ -123,23 +152,13 @@ public class UserController {
 
         // Add user to current session
         sess.setAttribute(Constants.SESS_ATTR_USER, user);
+        mav.addObject("currentUser", user);
         
         // Redirect to previous page before login, if avail
         if(sess.getAttribute(Constants.SESS_ATTR_REDIR_REQ) != null)
             mav.setViewName((String) sess.getAttribute(Constants.SESS_ATTR_REDIR_REQ));
         else
             mav.setViewName("redirect:/");
-
-        return mav;
-    }
-
-    @GetMapping("/logout")
-    public ModelAndView getLogout(HttpSession sess) {
-        ModelAndView mav = new ModelAndView();
-
-        sess.invalidate();
-
-        mav.setViewName("redirect:/");
 
         return mav;
     }

@@ -1,6 +1,7 @@
 package ssf.miniproject.services;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +28,7 @@ public class SearchService {
         String cacheResult = searchRepo.getResultsFromCache(keyword);
 
         if(cacheResult != null)
-            return Restaurant.jsonToRestaurant(cacheResult, googleAPIkey);
+            return Restaurant.jsonToRestaurantList(cacheResult, googleAPIkey);
         
         // Make API call thru SearchRestController
         RestTemplate restTemplate = new RestTemplate();
@@ -39,11 +40,26 @@ public class SearchService {
             searchRepo.cacheSearchResults(keyword, response.getBody());
             
             // Convert response to list of Restaurant objs
-            return Restaurant.jsonToRestaurant(response.getBody(), googleAPIkey);
+            return Restaurant.jsonToRestaurantList(response.getBody(), googleAPIkey);
         } else {
             // might need to throw proper exception
             throw new Exception(response.getBody());            
         }
         //return null;
+    }
+
+    public String saveRestaurant(Restaurant restaurant) {
+        //String restaurantID = UUID.randomUUID().toString().substring(0, 8);
+        //restaurant.setId(restaurantID);
+        
+        // Save restaurant info if it havent been saved yet
+        if(getRestaurantByID(restaurant.getId()) == null)
+            searchRepo.saveRestaurant(restaurant.getId(), restaurant.toJson());
+
+        return restaurant.getId();
+    }
+
+    public Restaurant getRestaurantByID(String id) {
+        return Restaurant.jsonToRestaurant(searchRepo.getRestaurantByID(id));
     }
 }

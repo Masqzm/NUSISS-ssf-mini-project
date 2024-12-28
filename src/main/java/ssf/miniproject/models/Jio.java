@@ -1,25 +1,45 @@
 package ssf.miniproject.models;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class Jio {
-    private String id;
+    private String id;   
     private String posterName;
     private Restaurant restaurant;
-    private Date bookingDate;               // inclusive of time
-    private int capacity;
-    private boolean isJioingForPromo;
 
+    // @NotNull(message = "Please select a date")
+    // @DateTimeFormat(pattern="yyyy-MM-dd")
+    // @Future(message = "Please enter a valid date")
+    // private Date bookingDate;               // inclusive of time
+
+
+    @NotNull(message = "Please select a date")
+    @Future(message = "Please enter a valid date")
+    private LocalDate date;
+
+    @NotNull(message = "Please select a time")
+    private LocalTime time;
+
+    private int capacity;
+    private boolean jioingForPromo;
+
+    @Size(min = 1, message = "Please select at least one topic")
     private List<String> topics;
     private List<String> attendeesNameList;   // inclusive of poster
-
-    
     
     @Override
     public String toString() {
-        return "Jio [id=" + id + ", posterName=" + posterName + ", restaurant=" + restaurant + ", bookingDate="
-                + bookingDate + ", capacity=" + capacity + ", isJioingForPromo=" + isJioingForPromo + ", topics="
+        return "Jio [id=" + id + ", posterName=" + posterName + ", restaurant=" + restaurant + ", date="
+                + date + ", time=" + time + ", capacity=" + capacity + ", jioingForPromo=" + jioingForPromo + ", topics="
                 + topics + ", attendeesNameList=" + attendeesNameList + "]";
     }
     public String getId() {
@@ -40,11 +60,17 @@ public class Jio {
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
     }
-    public Date getBookingDate() {
-        return bookingDate;
+    public LocalDate getDate() {
+        return date;
     }
-    public void setBookingDate(Date bookingDate) {
-        this.bookingDate = bookingDate;
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+    public LocalTime getTime() {
+        return time;
+    }
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
     public int getCapacity() {
         return capacity;
@@ -53,10 +79,10 @@ public class Jio {
         this.capacity = capacity;
     }
     public boolean isJioingForPromo() {
-        return isJioingForPromo;
+        return jioingForPromo;
     }
-    public void setJioingForPromo(boolean isJioingForPromo) {
-        this.isJioingForPromo = isJioingForPromo;
+    public void setJioingForPromo(boolean jioingForPromo) {
+        this.jioingForPromo = jioingForPromo;
     }
     public List<String> getTopics() {
         return topics;
@@ -69,5 +95,5 @@ public class Jio {
     }
     public void setAttendeesNameList(List<String> attendeesNameList) {
         this.attendeesNameList = attendeesNameList;
-    }    
+    }
 }
