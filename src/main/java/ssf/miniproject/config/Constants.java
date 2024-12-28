@@ -7,12 +7,13 @@ import jakarta.json.JsonObject;
 public class Constants {
     public static final String REDIS_TEMPLATE = "redis-0";
     public static final String REDIS_KEY_USER = "USERS";      
+    public static final String REDIS_KEY_JIOS = "JIOS";    
     public static final String REDIS_KEY_SEARCH_CACHE = "RESULTS";      // search results cache key
-    public static final String REDIS_KEY_RESTAURANTS = "RESTAURANTS";   // viewed restaurants stored key
+    public static final String REDIS_KEY_RESTAURANTS = "RESTAURANTS";   // viewed restaurants stored key  
     public static final long REDIS_CACHE_TTL_HRS = 10;                  // how long to cache results in hrs TODO: change back to 1h or btr soln: clear on session close
 
     public static final String SESS_ATTR_USER = "currentUser";
-    public static final String SESS_ATTR_VIEW_RESTAURANT = "storedRestInfo";    // temp storage of restaurant info
+    public static final String SESS_ATTR_JIO_RESTAURANT = "storedRestInfo";    // temp storage of restaurant info
     public static final String SESS_ATTR_REDIR_REQ = "redirectRequest";         // session attr key to hold request URI + query (if any) to redirect to upon successful registration/login
     
     public static final String GOOGLE_PLACES_TEXTSEARCH_URL = "https://places.googleapis.com/v1/places:searchText";

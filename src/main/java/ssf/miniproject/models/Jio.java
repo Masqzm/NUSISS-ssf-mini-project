@@ -1,12 +1,19 @@
 package ssf.miniproject.models;
 
+import java.io.StringReader;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,12 +22,6 @@ public class Jio {
     private String id;   
     private String posterName;
     private Restaurant restaurant;
-
-    // @NotNull(message = "Please select a date")
-    // @DateTimeFormat(pattern="yyyy-MM-dd")
-    // @Future(message = "Please enter a valid date")
-    // private Date bookingDate;               // inclusive of time
-
 
     @NotNull(message = "Please select a date")
     @Future(message = "Please enter a valid date")
@@ -35,6 +36,82 @@ public class Jio {
     @Size(min = 1, message = "Please select at least one topic")
     private List<String> topics;
     private List<String> attendeesNameList;   // inclusive of poster
+
+    public Jio() {}
+    public Jio(String id, String posterName, Restaurant restaurant, LocalDate date, LocalTime time,
+            int capacity, boolean jioingForPromo, List<String> topics, List<String> attendeesNameList) {
+        this.id = id;
+        this.posterName = posterName;
+        this.restaurant = restaurant;
+        this.date = date;
+        this.time = time;
+        this.capacity = capacity;
+        this.jioingForPromo = jioingForPromo;
+        this.topics = topics;
+        this.attendeesNameList = attendeesNameList;
+    }
+
+    public static Jio jsonToJio(String json) {
+        if (json == null)
+            return null;
+        
+        JsonReader reader = Json.createReader(new StringReader(json));
+        JsonObject j = reader.readObject();
+
+        List<String> topics = new ArrayList<>(); 
+        List<String> attendeesNameList = new ArrayList<>(); 
+
+        for(int i = 0; i < j.getJsonArray("topics").size(); i++) 
+            topics.add(j.getJsonArray("topics").getString(i));
+
+        for(int i = 0; i < j.getJsonArray("attendees").size(); i++) 
+            attendeesNameList.add(j.getJsonArray("attendees").getString(i));
+
+        Restaurant rest = Restaurant.jsonToRestaurant(j.getString("restaurant"));
+
+        // Convert unix (long) back to date & time
+        Long unixTimestamp = j.getJsonNumber("unixTimestamp").longValue();
+        ZonedDateTime zonedDateTime = Instant.ofEpochSecond(unixTimestamp).atZone(ZoneOffset.UTC);
+        LocalDate date = zonedDateTime.toLocalDate();
+        LocalTime time = zonedDateTime.toLocalTime();
+
+        Jio jio = new Jio(j.getString("id"), 
+                        j.getString("posterName"),
+                        rest, date, time,
+                        j.getInt("capacity"),
+                        j.getBoolean("jioingForPromo"),
+                        topics, attendeesNameList);
+
+        return jio;
+    }
+
+    public String toJson() {
+        JsonArrayBuilder jArrBuilderTopics = Json.createArrayBuilder();
+        JsonArrayBuilder jArrBuilderAttendees = Json.createArrayBuilder();
+
+        for(String topic : topics) 
+            jArrBuilderTopics.add(topic);
+        
+        for(String attendee : attendeesNameList) 
+            jArrBuilderAttendees.add(attendee);
+
+        // Combine date & time to convert to long unix timestamp
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
+        long unixTimestamp = dateTime.toEpochSecond(ZoneOffset.UTC);
+
+        JsonObject job = Json.createObjectBuilder()
+                        .add("id", id)
+                        .add("posterName", posterName)
+                        .add("restaurant", restaurant.toJson())
+                        .add("unixTimestamp", unixTimestamp)
+                        .add("capacity", capacity)
+                        .add("jioingForPromo", jioingForPromo)
+                        .add("topics", jArrBuilderTopics.build())
+                        .add("attendees", jArrBuilderAttendees.build())
+                        .build();
+
+        return job.toString();
+    }
     
     @Override
     public String toString() {

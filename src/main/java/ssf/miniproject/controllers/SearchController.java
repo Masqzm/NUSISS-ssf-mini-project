@@ -79,10 +79,11 @@ public class SearchController {
 
         Restaurant rest = searchSvc.getRestaurantByID(id);     
 
-        Jio jio = new Jio();
+        // To pass restaurant info if users post a Jio
+        sess.setAttribute(Constants.SESS_ATTR_JIO_RESTAURANT, rest);
         
         mav.addObject("restaurant", searchSvc.getRestaurantByID(id));
-        mav.addObject("jio", jio);
+        mav.addObject("jio", new Jio());
         mav.addObject("topicSuggestions", Constants.JIO_TOPICS_LIST);
         mav.setViewName("restaurant-info"); 
 

@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import ssf.miniproject.config.Constants;
 import ssf.miniproject.models.Jio;
+import ssf.miniproject.models.Restaurant;
+import ssf.miniproject.models.User;
 import ssf.miniproject.services.JioService;
 
 @Controller
@@ -30,16 +32,16 @@ public class JioController {
     public ModelAndView postJio(@Valid Jio jio, BindingResult bindings, HttpSession sess) {
         ModelAndView mav = new ModelAndView();
 
+        User user = (User) sess.getAttribute(Constants.SESS_ATTR_USER);
+
         // Restrict access if user haven't logged in & redirect to login page
-        if(sess.getAttribute(Constants.SESS_ATTR_USER) == null) {
+        if(user == null) {
             mav.setViewName("redirect:/login?restrictedFlagRaised=true");
 
             return mav;
         }
 
-
-        System.out.println(jio);
-
+        jioSvc.saveJio(user.getName(), (Restaurant) sess.getAttribute(Constants.SESS_ATTR_JIO_RESTAURANT), jio);
         
         mav.setViewName("index");
 
