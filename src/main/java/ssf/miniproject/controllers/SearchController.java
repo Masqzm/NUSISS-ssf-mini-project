@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 import ssf.miniproject.config.Constants;
 import ssf.miniproject.models.Jio;
 import ssf.miniproject.models.Restaurant;
+import ssf.miniproject.services.JioService;
 import ssf.miniproject.services.SearchService;
 
 @Controller
@@ -25,6 +27,8 @@ import ssf.miniproject.services.SearchService;
 public class SearchController {
     @Autowired 
     SearchService searchSvc;
+    @Autowired
+    JioService jioSvc;
 
     @GetMapping("/search")
     public ModelAndView Search(@RequestParam String placeKeyword, HttpServletRequest request, HttpSession sess) {
@@ -65,7 +69,7 @@ public class SearchController {
         
         // store restaurant from search results into redis permanently so we can use it later
         // - also looksup if restaurant has already been saved
-        String id = searchSvc.saveRestaurant(Restaurant.jsonToRestaurant(restaurantJSON));
+        String id = searchSvc.saveRestaurant(Restaurant.jsonToRestaurant(restaurantJSON), false);
 
         mav.setViewName("redirect:restaurant/" + id); 
 
@@ -81,7 +85,16 @@ public class SearchController {
 
         mav.addObject("currentUser", sess.getAttribute(Constants.SESS_ATTR_USER));
 
-        Restaurant rest = searchSvc.getRestaurantByID(id);     
+        Restaurant rest = searchSvc.getRestaurantByID(id); 
+        
+        // if restaurant cannot be found in db
+        if(rest == null) {
+            mav.setStatus(HttpStatusCode.valueOf(404));
+            mav.addObject("id", id);
+            mav.setViewName("error404"); 
+
+            return mav;
+        }
 
         // To pass restaurant info if users post a Jio
         sess.setAttribute(Constants.SESS_ATTR_JIO_RESTAURANT, rest);
@@ -100,6 +113,28 @@ public class SearchController {
 
             // Remove errors from sess
             sess.removeAttribute(Constants.SESS_ATTR_JIO_FORM_ERR);
+        }
+
+        // Bind jios to restaurant-info, if available
+        if(!rest.getJioIDList().isEmpty()) {
+            List<Jio> jios = new ArrayList<>();
+            for (String jioID : rest.getJioIDList()) {
+                Jio checkJio = jioSvc.getJioByID(jioID);
+
+                // null jios are from deletion of jios
+                if(checkJio != null)
+                    jios.add(checkJio);
+            }
+            
+            // Sort list by each Jio's unix timestamp
+            jios.sort((jio1, jio2) -> {
+                long unix1 = Jio.convertToUnixTimestamp(jio1.getDate(), jio1.getTime());
+                long unix2 = Jio.convertToUnixTimestamp(jio2.getDate(), jio2.getTime());
+                
+                return Long.compare(unix1, unix2);  
+            });
+
+            mav.addObject("jioList", jios);
         }
                 
         mav.addObject("restaurant", searchSvc.getRestaurantByID(id));

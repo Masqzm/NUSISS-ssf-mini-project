@@ -1,7 +1,6 @@
 package ssf.miniproject.services;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +15,9 @@ import ssf.miniproject.repo.SearchRepo;
 public class SearchService {
     @Autowired
     SearchRepo searchRepo;
+    
+    @Autowired
+    JioService jioSvc;
 
     @Value("${google.api.key}") 
     private String googleAPIkey;
@@ -48,18 +50,23 @@ public class SearchService {
         //return null;
     }
 
-    public String saveRestaurant(Restaurant restaurant) {
-        //String restaurantID = UUID.randomUUID().toString().substring(0, 8);
-        //restaurant.setId(restaurantID);
-        
+    public String saveRestaurant(Restaurant restaurant, boolean isUpdating) {        
         // Save restaurant info if it havent been saved yet
-        if(getRestaurantByID(restaurant.getId()) == null)
+        if(getRestaurantByID(restaurant.getId()) == null || isUpdating)
             searchRepo.saveRestaurant(restaurant.getId(), restaurant.toJson());
 
         return restaurant.getId();
     }
 
     public Restaurant getRestaurantByID(String id) {
-        return Restaurant.jsonToRestaurant(searchRepo.getRestaurantByID(id));
+        Restaurant rest = Restaurant.jsonToRestaurant(searchRepo.getRestaurantByID(id));
+
+        if(rest == null)
+            return null;
+            
+        if(rest.getJioIDList() != null && !rest.getJioIDList().isEmpty())
+            return jioSvc.updateRestaurantJios(rest);
+
+        return rest;
     }
 }

@@ -32,12 +32,13 @@ public class Restaurant {
     //private List<String> cuisinesList;      // ADD-ON FEATURE, NOT PRIORITY (compare against data/fnb_types.txt)
     //private List<Review> reviewsList;       // ADD ON FEATURE, NOT PRIORITY
 
-    //private List<Jio> jiosList;             // stores all jios users has made
+    private List<String> jioIDList;             // stores all jios users has made
 
     public Restaurant() {}
     public Restaurant(String id, String name, String address, String googleMapsURI, String googlePhotosURI,
             String websiteURI, String startPrice, String endPrice, String priceRange, double rating,
-            int userRatingCount, List<String> openingHoursList) {
+            int userRatingCount, List<String> openingHoursList,
+            List<String> jioIDList) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -50,6 +51,7 @@ public class Restaurant {
         this.rating = rating;
         this.userRatingCount = userRatingCount;
         this.openingHoursList = openingHoursList;
+        this.jioIDList = jioIDList;
     }
 
     // To parse search results response
@@ -141,12 +143,17 @@ public class Restaurant {
         JsonReader reader = Json.createReader(new StringReader(json));
         JsonObject j = reader.readObject();
 
-        JsonArray jArr = j.getJsonArray("openingHoursList");
+        JsonArray jArrOH = j.getJsonArray("openingHoursList");
+        JsonArray jArrJioIDs = j.getJsonArray("jioIDList");
         
         List<String> openingHrs = new ArrayList<>();
+        List<String> jioIDs = new ArrayList<>();
         
-        for(int i = 0; i < jArr.size(); i++) 
-            openingHrs.add(jArr.getString(i));
+        for(int i = 0; i < jArrOH.size(); i++) 
+            openingHrs.add(jArrOH.getString(i));
+        
+        for(int i = 0; i < jArrJioIDs.size(); i++) 
+            jioIDs.add(jArrJioIDs.getString(i));
 
         Restaurant rest = new Restaurant(j.getString("id"),
                                 j.getString("name"),
@@ -159,15 +166,22 @@ public class Restaurant {
                                 j.getString("priceRange"),
                                 j.getJsonNumber("rating").doubleValue(),
                                 j.getInt("userRatingCount"),
-                                openingHrs);
+                                openingHrs, jioIDs);
                                 
         return rest;
     }
     public String toJson() {
-        JsonArrayBuilder jsonArrB = Json.createArrayBuilder();
+        JsonArrayBuilder jArrBOpeningHrs = Json.createArrayBuilder();
+        JsonArrayBuilder jArrBJioIDs = Json.createArrayBuilder();
         
         for (String openingHrs : openingHoursList)
-            jsonArrB.add(openingHrs);
+            jArrBOpeningHrs.add(openingHrs);
+        
+        // If jioIDList is null, empty JSON array will be built (arr = [])
+        if(jioIDList != null && !jioIDList.isEmpty()) {
+            for (String jioID : jioIDList)
+                jArrBJioIDs.add(jioID);
+        } 
 
         if(this.id == null)
             this.id = "";
@@ -188,7 +202,8 @@ public class Restaurant {
                         .add("priceRange", this.priceRange)
                         .add("rating", this.rating)
                         .add("userRatingCount", this.userRatingCount)
-                        .add("openingHoursList", jsonArrB.build())
+                        .add("openingHoursList", jArrBOpeningHrs.build())
+                        .add("jioIDList", jArrBJioIDs.build())
                         .build(); 
 
         return job.toString();
@@ -283,4 +298,10 @@ public class Restaurant {
     // public void setReviewsList(List<Review> reviewsList) {
     //     this.reviewsList = reviewsList;
     // }
+    public List<String> getJioIDList() {
+        return jioIDList;
+    }
+    public void setJioIDList(List<String> jioIDList) {
+        this.jioIDList = jioIDList;
+    }
 }

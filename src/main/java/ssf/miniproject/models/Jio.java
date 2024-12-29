@@ -21,7 +21,7 @@ import jakarta.validation.constraints.Size;
 public class Jio {
     private String id;   
     private String posterName;
-    private Restaurant restaurant;
+    private String restaurantID;
 
     @NotNull(message = "*Please select a date")
     @Future(message = "*Please enter a valid future date")
@@ -38,11 +38,11 @@ public class Jio {
     private List<String> attendeesNameList;   // inclusive of poster
 
     public Jio() {}
-    public Jio(String id, String posterName, Restaurant restaurant, LocalDate date, LocalTime time,
+    public Jio(String id, String posterName, String restaurantID, LocalDate date, LocalTime time,
             int capacity, boolean jioingForPromo, List<String> topics, List<String> attendeesNameList) {
         this.id = id;
         this.posterName = posterName;
-        this.restaurant = restaurant;
+        this.restaurantID = restaurantID;
         this.date = date;
         this.time = time;
         this.capacity = capacity;
@@ -67,7 +67,7 @@ public class Jio {
         for(int i = 0; i < j.getJsonArray("attendees").size(); i++) 
             attendeesNameList.add(j.getJsonArray("attendees").getString(i));
 
-        Restaurant rest = Restaurant.jsonToRestaurant(j.getString("restaurant"));
+        //Restaurant rest = Restaurant.jsonToRestaurant(j.getString("restaurant"));
 
         // Convert unix (long) back to date & time
         Long unixTimestamp = j.getJsonNumber("unixTimestamp").longValue();
@@ -77,7 +77,8 @@ public class Jio {
 
         Jio jio = new Jio(j.getString("id"), 
                         j.getString("posterName"),
-                        rest, date, time,
+                        j.getString("restaurantID"), 
+                        date, time,
                         j.getInt("capacity"),
                         j.getBoolean("jioingForPromo"),
                         topics, attendeesNameList);
@@ -95,15 +96,11 @@ public class Jio {
         for(String attendee : attendeesNameList) 
             jArrBuilderAttendees.add(attendee);
 
-        // Combine date & time to convert to long unix timestamp
-        LocalDateTime dateTime = LocalDateTime.of(date, time);
-        long unixTimestamp = dateTime.toEpochSecond(ZoneOffset.UTC);
-
         JsonObject job = Json.createObjectBuilder()
                         .add("id", id)
                         .add("posterName", posterName)
-                        .add("restaurant", restaurant.toJson())
-                        .add("unixTimestamp", unixTimestamp)
+                        .add("restaurantID", restaurantID)
+                        .add("unixTimestamp", convertToUnixTimestamp(date, time))
                         .add("capacity", capacity)
                         .add("jioingForPromo", jioingForPromo)
                         .add("topics", jArrBuilderTopics.build())
@@ -112,12 +109,17 @@ public class Jio {
 
         return job.toString();
     }
+
+    // Combine date & time to convert to long unix timestamp
+    public static long convertToUnixTimestamp(LocalDate date, LocalTime time) {
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
+        
+        return dateTime.toEpochSecond(ZoneOffset.UTC);
+    }
     
     @Override
     public String toString() {
-        return "Jio [id=" + id + ", posterName=" + posterName + ", restaurant=" + restaurant + ", date="
-                + date + ", time=" + time + ", capacity=" + capacity + ", jioingForPromo=" + jioingForPromo + ", topics="
-                + topics + ", attendeesNameList=" + attendeesNameList + "]";
+        return toJson();
     }
     public String getId() {
         return id;
@@ -131,11 +133,11 @@ public class Jio {
     public void setPosterName(String posterName) {
         this.posterName = posterName;
     }
-    public Restaurant getRestaurant() {
-        return restaurant;
+    public String getRestaurantID() {
+        return restaurantID;
     }
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
+    public void setRestaurantID(String restaurantID) {
+        this.restaurantID = restaurantID;
     }
     public LocalDate getDate() {
         return date;

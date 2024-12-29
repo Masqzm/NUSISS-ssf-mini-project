@@ -89,7 +89,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ModelAndView postRegistration(@Valid User user, BindingResult bindings) {
+    public ModelAndView postRegistration(@Valid User user, BindingResult bindings, HttpSession sess) {
         ModelAndView mav = new ModelAndView();
 
         boolean userExists = false;
@@ -113,6 +113,9 @@ public class UserController {
         }
 
         userSvc.registerUser(user);
+        
+        // Login user to sess
+        sess.setAttribute(Constants.SESS_ATTR_USER, user);
         
         mav.addObject("currentUser", user);  
         mav.setViewName("register-success");

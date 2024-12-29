@@ -196,8 +196,39 @@
         </div>
 
         
-        <div id="btmRow" class="container d-flex">
-            Btm (Upcoming Jios)
+        <div id="btmRow" class="container-fluid flex-column px-4" style="max-width: 1400px;">
+            <hr>
+            <br>
+            <h2>Upcoming Jios</h2>
+            <br>
+            <div class="container text-center mb-3">
+                <div th:if="${jioList == null}">
+                    <h3 class="fw-light">No open jios for now! Maybe you could open a new one?</h3>
+                    <br><br>
+                </div>
+
+                <div th:if="${jioList != null}" class="row row-cols-4">
+                    <div class="col" th:each="upcomingJio : ${jioList}" th:object="${upcomingJio}">
+                        <div class="card text-bg-light mb-3" style="max-width: 18rem;">
+                            <div class="card-header h5">
+                                <span th:text="*{posterName}"></span>'s jio
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-title mb-3">
+                                    <span th:text="${#temporals.format(upcomingJio.date, 'E, dd MMM yy')}"></span> @ 
+                                    <span th:text="${#temporals.format(upcomingJio.time, 'h:m a')}"></span>
+                                </h6>
+                                <ul class="card-text text-start py-2">
+                                    <li>Attendees: <span th:text="*{#lists.size(attendeesNameList)}"></span>/<span th:text="*{capacity}"></span> pax</li>
+
+                                    <li>Jioing for promo: <span th:text="*{jioingForPromo} ? 'Yes' : 'No'"></span></li>
+                                </ul>
+                                <a class="btn btn-primary" th:href="@{/jio/{id}(id=${upcomingJio.id})}" role="button">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>   
 
         <div class="position-fixed z-3" style="bottom: 5%; right: 2.5%;">
