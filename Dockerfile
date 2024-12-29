@@ -1,7 +1,7 @@
 ### DOCKERISATION - STAGE 1
 #---------------------------
 # Install JDK
-FROM eclipse-temurin:23-jdk AS builder
+FROM eclipse-temurin:22-jdk AS builder
 
 LABEL maintainer="hazim"
 
@@ -20,16 +20,13 @@ RUN chmod a+x ./mvnw && ./mvnw package -Dmaven.test.skip=true
 
 ### DOCKERISATION - STAGE 2
 #---------------------------
-FROM eclipse-temurin:23-jdk
+FROM eclipse-temurin:22-jdk
 
 # Set working dir
 WORKDIR /app
 
 # Copy over jar from first container (builder), rename to preferred app name
-COPY --from=builder /compileDir/target/assessment-0.0.1-SNAPSHOT.jar assessment.jar
-
-# Check if curl command is available
-# RUN apt update && apt install -y curl
+COPY --from=builder /compileDir/target/miniproject-0.0.1-SNAPSHOT.jar miniproject.jar
 
 # Set environment variables
 ENV SERVER_PORT=3000
@@ -39,10 +36,9 @@ ENV SPRING_DATA_REDIS_DATABASE=0
 ENV SPRING_DATA_REDIS_USERNAME=""
 ENV SPRING_DATA_REDIS_PASSWORD=""
 
+ENV GOOGLE_API_KEY=""
+
 EXPOSE ${SERVER_PORT}
 
-# HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-#    CMD curl http://localhost:${PORT}/health || exit 1
-
 # Run app
-ENTRYPOINT java -jar assessment.jar
+ENTRYPOINT java -jar miniproject.jar
