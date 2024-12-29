@@ -27,10 +27,10 @@
             <div class="collapse navbar-collapse justify-content-start" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item ms-3">
-                        <a class="nav-link text-light" aria-current="page" th:href="@{/about}">About</a>
+                        <a class="nav-link text-light link-underline-opacity-75-hover" aria-current="page" th:href="@{/about}">About</a>
                     </li>
                     <li class="nav-item ms-3">
-                        <a class="nav-link text-light" aria-current="page" th:href="@{/jios}">All Jios</a>
+                        <a class="nav-link text-light" aria-current="page" th:href="@{/allJios}">All Jios</a>
                     </li>
                     <li th:if="${currentUser == null}" class="nav-item ms-3">
                         <a class="btn btn-outline-light" th:href="@{/register}" role="button">Sign up</a>

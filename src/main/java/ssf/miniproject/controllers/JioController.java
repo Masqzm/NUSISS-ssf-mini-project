@@ -1,5 +1,7 @@
 package ssf.miniproject.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,40 @@ public class JioController {
     JioService jioSvc;
     @Autowired
     SearchService searchSvc;
+
+    @GetMapping("/myJios")
+    public ModelAndView getUserJios(HttpSession sess) {
+        ModelAndView mav = new ModelAndView();
+
+        User user = (User) sess.getAttribute(Constants.SESS_ATTR_USER);
+        // Restrict access if user haven't logged in & redirect to login page
+        if(user == null) {
+            mav.setViewName("redirect:/login?restrictedFlagRaised=true");
+
+            return mav;
+        }
+
+        List<Jio> jioList = jioSvc.getUserJios(user);
+
+        mav.addObject("jioList", jioList);
+        mav.addObject("currentUser", user);
+        mav.setViewName("myJios"); 
+
+        return mav;
+    }
+    
+    @GetMapping("/allJios")
+    public ModelAndView getAllJios(HttpSession sess) {
+        ModelAndView mav = new ModelAndView();
+
+        List<Jio> jioList = jioSvc.getAllJios();
+
+        mav.addObject("jioList", jioList);
+        mav.addObject("currentUser", sess.getAttribute(Constants.SESS_ATTR_USER));
+        mav.setViewName("allJios"); 
+
+        return mav;
+    }
 
     @GetMapping("/jio/{id}")
     public ModelAndView getJioByID(@PathVariable String id, HttpSession sess) {
@@ -97,7 +133,7 @@ public class JioController {
             return mav;
         }
 
-        String id = jioSvc.saveJio(user.getName(), rest, jio);
+        String id = jioSvc.saveJio(user, rest, jio);
         
         //mav.addObject("jioID", id);
         mav.setViewName("redirect:/restaurant/" + rest.getId() + "?postSuccess=true");
@@ -122,16 +158,18 @@ public class JioController {
 
         // if user is not poster of this jio
         if(!jio.getPosterName().equals(user.getName())) {
-            // if there's still capacity to join this jio
-            if(jio.getAttendeesNameList().size() < jio.getCapacity())
-                jioSvc.updateJio(jio, form.getFirst("attendee"), Boolean.parseBoolean(form.getFirst("isJoining")));
+            boolean isJoining = Boolean.parseBoolean(form.getFirst("isJoining"));
+
+            // if there's still capacity to join this jio OR user is cancelling
+            if(jio.getAttendeesNameList().size() < jio.getCapacity() || !isJoining)
+                jioSvc.updateJio(jio, User.jsonToUser(form.getFirst("attendeeUpdate")), isJoining);
 
             mav.setViewName("redirect:/jio/" + jio.getId());
 
             return mav;
         }
-
-        jioSvc.deleteJioByID(jio.getId());
+        else
+            jioSvc.deleteJioByIDUpdateUser(jio.getId(), user);
         
         mav.setViewName("redirect:/restaurant/" + jio.getRestaurantID());
 

@@ -19,7 +19,7 @@ public class UserRepo {
     }
 
     // HSET USERS <name> {userJSON}
-    public void createUser(User user) {
+    public void saveUser(User user) {
         template.opsForHash().put(Constants.REDIS_KEY_USER, user.getName(), user.toJson());
     }
 

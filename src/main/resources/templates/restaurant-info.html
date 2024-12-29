@@ -217,7 +217,7 @@
                             <div class="card-body">
                                 <h6 class="card-title mb-3">
                                     <span th:text="${#temporals.format(upcomingJio.date, 'E, dd MMM yy')}"></span> @ 
-                                    <span th:text="${#temporals.format(upcomingJio.time, 'h:m a')}"></span>
+                                    <span th:text="${#temporals.format(upcomingJio.time, 'h:mm a')}"></span>
                                 </h6>
                                 <ul class="card-text text-start py-2 fw-light">
                                     <li>Attendees: <span th:text="*{#lists.size(attendeesNameList)}"></span>/<span th:text="*{capacity}"></span> pax</li>

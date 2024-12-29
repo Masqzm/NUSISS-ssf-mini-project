@@ -21,7 +21,7 @@
         <h1><span th:text="${jio.posterName}"></span>'s Open Jio @ <span th:text="${restaurant.name}"></span></h1>
         <h2 class="mb-3">
             <span th:text="${#temporals.format(jio.date, 'E, dd MMM yy')}"></span>
-             [<span th:text="${#temporals.format(jio.time, 'h:m a')}"></span>]
+             [<span th:text="${#temporals.format(jio.time, 'h:mm a')}"></span>]
         </h2>
 
         <div class="card text-center mb-4" style="min-width: 50rem;">
@@ -82,7 +82,7 @@
                 <div class="row my-4" id="updateJioAttendee">
                     <form method="POST" action="/updateJioAttendee">
                         <input type="hidden" name="isJoining" th:value="${allowJoin}">
-                        <input type="hidden" name="attendee" th:value="${currentUser.name}">
+                        <input type="hidden" name="attendeeUpdate" th:value="${currentUser}">
                         <input type="hidden" name="jioJSON" th:value="${jio}">
 
                         <div th:if="${#lists.size(jio.attendeesNameList) < jio.capacity}">

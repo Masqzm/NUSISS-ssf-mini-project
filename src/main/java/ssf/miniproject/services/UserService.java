@@ -16,7 +16,7 @@ public class UserService {
     }
 
     public void registerUser(User user) {
-        userRepo.createUser(user);
+        userRepo.saveUser(user);
     }
 
     public User checkUserCredentials(String name, String password) {

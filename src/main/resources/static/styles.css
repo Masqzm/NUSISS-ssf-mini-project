@@ -9,3 +9,25 @@
 .input-shadow:hover {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
+
+.nav-link {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: currentColor; 
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover::after {
+    width: 100%; 
+  }

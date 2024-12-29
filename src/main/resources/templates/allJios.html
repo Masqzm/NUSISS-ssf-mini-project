@@ -20,14 +20,14 @@
         <br>
         <div class="container-fluid p-2 gap-3 flex-grow-1">
             <div th:if="${jioList == null}" class="text-center">
-                <h1>You have no upcoming jios!</h1>
+                <h1>No upcoming jios available!</h1>
                 <br>
-                <h3 class="fw-light">You might wanna socialise more by joining other jios or opening your own?</h3>
+                <h3 class="fw-light">Perhaps you can be the first to open?</h3>
             </div>
-            <div class="container text-center" th:if="${jioList != null}">
-                <h1>My Upcoming Jios</h1>
+            <div th:if="${jioList != null}" class="container text-center">
+                <h1>All Upcoming Jios</h1>
                 <br>
-                <div class="row row-cols-4">
+                <div th:if="${jioList != null}" class="row row-cols-4">
                     <div class="col" th:each="upcomingJio : ${jioList}" th:object="${upcomingJio}">
                         <div class="card text-bg-light mb-3 shadow" style="max-width: 18rem;">
                             <div class="card-header h5">
@@ -50,10 +50,10 @@
                 </div>
             </div>
         </div>
-        
-        <div th:insert="~{fragments :: footer}"></div>
-    </div>
 
+        <!-- <div th:insert="~{fragments :: footer}" th:classappend="${jioList} == null ? 'fixed-bottom' : ''"></div> -->
+        <div th:insert="~{fragments :: footer}" ></div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -62,8 +62,8 @@ public class User {
     public String toJson() {
         JsonArrayBuilder jArrBuilder = Json.createArrayBuilder();
 
-        if(jioIDsList != null)
-        {
+        // If jioIDsList is null, empty JSON array will be built (arr = [])
+        if(jioIDsList != null && !jioIDsList.isEmpty()) {
             for(String jioID : jioIDsList) 
                 jArrBuilder.add(jioID);
         }
@@ -80,8 +80,7 @@ public class User {
     
     @Override
     public String toString() {
-        return "User [name=" + name + ", password=" + password + ", email=" + email 
-                + ", jioIDsList=" + jioIDsList + "]";
+        return toJson();
     }
     public String getName() {
         return name;
