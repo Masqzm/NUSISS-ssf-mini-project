@@ -6,6 +6,7 @@
     <title>Restaurant Info</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 
 <body class="m-0 border-0">
@@ -34,7 +35,7 @@
         </div>
         <div id="topRow" class="d-flex justify-content-evenly gap-4 px-4" style="max-width: 1400px;">            
             <div id="restaurantInfo" class="flex-grow-1">
-                <div class="card text-center" style="min-width: 50rem;" th:object="${restaurant}">
+                <div class="card text-center shadow" style="min-width: 50rem;" th:object="${restaurant}">
                     <div class="card-header p-0">
                         <img class="img-fluid" th:src="*{googlePhotosURI}" style="max-height: 18rem;"></img>
                     </div>
@@ -104,7 +105,7 @@
             </div>
 
             <div id="jioForm" class="flex-shrink-1" style="min-width: 35rem;">
-                <div class="card">
+                <div class="card shadow">
                     <h5 class="card-header p-3 text-center">Open Jio</h5>
                     <div class="card-body">
                         
@@ -209,7 +210,7 @@
 
                 <div th:if="${jioList != null}" class="row row-cols-4">
                     <div class="col" th:each="upcomingJio : ${jioList}" th:object="${upcomingJio}">
-                        <div class="card text-bg-light mb-3" style="max-width: 18rem;">
+                        <div class="card text-bg-light mb-3 shadow" style="max-width: 18rem;">
                             <div class="card-header h5">
                                 <span th:text="*{posterName}"></span>'s jio
                             </div>
@@ -218,7 +219,7 @@
                                     <span th:text="${#temporals.format(upcomingJio.date, 'E, dd MMM yy')}"></span> @ 
                                     <span th:text="${#temporals.format(upcomingJio.time, 'h:m a')}"></span>
                                 </h6>
-                                <ul class="card-text text-start py-2">
+                                <ul class="card-text text-start py-2 fw-light">
                                     <li>Attendees: <span th:text="*{#lists.size(attendeesNameList)}"></span>/<span th:text="*{capacity}"></span> pax</li>
 
                                     <li>Jioing for promo: <span th:text="*{jioingForPromo} ? 'Yes' : 'No'"></span></li>
